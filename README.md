@@ -131,14 +131,6 @@ To set up and run the project locally, follow these steps:
     *   Log in using one of the user accounts created by `generate_data.php`. (You might need to check the `generated_data.sql` or the `USERS` table directly to find a valid username/password if you didn't set a default one or if passwords are not hashed as per your setup).
     *   If registration was implemented, you can create a new account via `register.php`.
 
-## Important Notes
-
-*   **Password Security:** The current implementation might store passwords in plain text for simplicity as per project phase or if explicitly requested. **In a real-world application, passwords MUST be hashed using functions like `password_hash()` and verified with `password_verify()`.** If this was implemented, `register.php` would hash passwords and `login.php` would use `password_verify()`.
-*   **Custom SQL Query Feature:** The `generalSQL.php` page includes a feature for executing custom SQL queries.
-    *   The default implementation (as per PDF suggestion) might restrict this to `SELECT` queries for security.
-    *   If this restriction was lifted, **be extremely cautious** as it poses a significant security risk, allowing potentially harmful DML/DDL commands to be executed. This should only be used in a trusted, controlled environment.
-*   **Error Reporting:** For development, PHP error reporting is enabled in some files (`ini_set('display_errors', 1); error_reporting(E_ALL);`). This should be turned off or logged to a file in a production environment.
-*   **Image URLs:** The `generate_data.php` script is configured to pick image URLs from text files in the `data/` directory (e.g., `input_image_urls_user.txt`). Ensure these files contain valid and accessible image URLs for a better visual experience. Fallback images are located in `assets/images/`.
 
 ## Deliverables
 
