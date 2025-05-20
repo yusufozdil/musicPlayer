@@ -35,60 +35,62 @@ The application includes the following core features as per the project requirem
 
 The project is organized as follows:
 
+```
 MusicPlayer_CSE348/
-├── index.html # Initial page for database setup
-├── install.php # Database and table creation script
-├── generate_data.php # Script to generate SQL INSERT statements for data
+├── index.html
+├── install.php
+├── generate_data.php
 │
-├── login.html # Login form
-├── login.php # Login authentication script
+├── login.html
+├── login.php
 │
-├── homepage.html # Main user homepage (view)
-├── homepage.php # Homepage logic and data retrieval
+├── homepage.html
+├── homepage.php
 │
-├── playlistpage.html # Playlist details page (view)
-├── playlistpage.php # Playlist page logic
-├── create_playlist.php # Script to handle new playlist creation
+├── playlistpage.html
+├── playlistpage.php
+├── create_playlist.php
 │
-├── currentmusic.html # Currently playing music page (view)
-├── currentmusic.php # Currently playing music page logic
+├── currentmusic.html
+├── currentmusic.php
 │
-├── artistpage.html # Artist details page (view)
-├── artistpage.php # Artist page logic
+├── artistpage.html
+├── artistpage.php
 │
-├── albumpage.html # Album details page (view)
-├── albumpage.php # Album page logic
+├── albumpage.html
+├── albumpage.php
 │
-├── generalSQL.html # General SQL operations page (view)
-├── generalSQL.php # General SQL operations page logic
+├── generalSQL.html
+├── generalSQL.php
 │
 ├── includes/
-│ └── db_connect.php # Database connection script
+│   └── db_connect.php
 │
 ├── assets/
-│ └── images/ 
-│ ├── default_album.png
-│ └── default_song.png
+│   └── images/
+│       ├── default_album.png
+│       └── default_song.png
 │
-├── data/ # Input files for data generation
-│ ├── input_countries.txt
-│ ├── input_artist_names.txt
-│ ├── input_genres.txt
-│ ├── input_bios.txt
-│ ├── input_names.txt
-│ ├── input_surnames.txt
-│ ├── input_album_titles.txt
-│ ├── input_song_titles.txt
-│ ├── input_playlist_titles.txt
-│ ├── input_image_urls_artist.txt
-│ ├── input_image_urls_user.txt
-│ ├── input_image_urls_album.txt
-│ └── input_image_urls_playlist.txt
+├── data/
+│   ├── input_countries.txt
+│   ├── input_artist_names.txt
+│   ├── input_genres.txt
+│   ├── input_bios.txt
+│   ├── input_names.txt
+│   ├── input_surnames.txt
+│   ├── input_album_titles.txt
+│   ├── input_song_titles.txt
+│   ├── input_playlist_titles.txt
+│   ├── input_image_urls_artist.txt
+│   ├── input_image_urls_user.txt
+│   ├── input_image_urls_album.txt
+│   └── input_image_urls_playlist.txt
 │
 ├── sql/
-│ ├── generated_data.sql 
+│   └── generated_data.sql
 │
-└── README.md # This file
+└── README.md
+```
 
 ## Setup and Installation
 
