@@ -63,6 +63,10 @@ MusicPlayer_CSE348/
 ├── generalSQL.html
 ├── generalSQL.php
 │
+├── PDFs/
+│   └── YusufOzdil_20210702049_ActionFlow.pdf
+│   └── YusufOzdil_20210702049_ER.pdf
+│
 ├── includes/
 │   └── db_connect.php
 │
