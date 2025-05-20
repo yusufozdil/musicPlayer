@@ -110,7 +110,7 @@ To set up and run the project locally, follow these steps:
     *   Modify the database connection variables (`$servername`, `$username`, `$password`, `$dbname`) to match your local database setup. The `$dbname` in `install.php` will be the name of the database created; ensure `db_connect.php` uses the same name after creation.
 
 3.  **Place Project Files:**
-    *   Copy the entire `MusicPlayer_CSE348` project folder into your web server's document root
+    *   Copy the entire `musicPlayer` project folder into your web server's document root
 
 4.  **Prepare Data Generation Files (Optional but Recommended):**
     *   Populate the `.txt` files inside the `data/` directory with sample data as described in the project or `generate_data.php` comments. This is crucial for the `generate_data.php` script to produce a rich dataset.
