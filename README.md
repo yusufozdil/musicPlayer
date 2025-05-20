@@ -136,11 +136,11 @@ To set up and run the project locally, follow these steps:
 *   **Error Reporting:** For development, PHP error reporting is enabled in some files (`ini_set('display_errors', 1); error_reporting(E_ALL);`). This should be turned off or logged to a file in a production environment.
 *   **Image URLs:** The `generate_data.php` script is configured to pick image URLs from text files in the `data/` directory (e.g., `input_image_urls_user.txt`). Ensure these files contain valid and accessible image URLs for a better visual experience. Fallback images are located in `assets/images/`.
 
-## Deliverables (as per project PDF)
+## Deliverables
 
-*   ER Diagram (`FullName_StudentID_ER.pdf`)
-*   Action Flow Diagram (`FullName_StudentID_ActionFlow.pdf`)
-*   SQL, PHP, and HTML files (`FullName_StudentID.zip` containing the project structure)
+*   ER Diagram (`YusufOzdil_20210702049_ER.pdf`)
+*   Action Flow Diagram (`YusufOzdil_20210702049_ActionFlow.pdf`)
+*   SQL, PHP, and HTML files (`YusufOzdil_20210702049.zip` containing the project structure)
 
 ---
 
