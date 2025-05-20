@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $page_title; ?> - Müzik Çalar</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #f9f9f9; }
+        .header { background-color: #333; color: white; padding: 15px 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 1.8em; }
+        .container { display: flex; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .left-panel-artist { width: 35%; padding: 20px; border-right: 1px solid #eee; text-align: center; }
+        .left-panel-artist img { width: 200px; height: 200px; object-fit: cover; border-radius: 50%; margin-bottom: 15px; border: 3px solid #eee; }
+        .left-panel-artist h2 { margin-top: 0; font-size: 1.6em; }
+        .left-panel-artist p { margin: 8px 0; color: #555; line-height: 1.6; }
+        .left-panel-artist .bio { text-align: left; font-size: 0.9em; color: #666; max-height: 200px; overflow-y: auto; padding-right:10px;}
+        .right-panel-artist { width: 65%; padding: 20px; }
+        .section-artist { margin-bottom: 30px; }
+        .section-artist h3 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; font-size: 1.3em; color: #333; }
+        .album-list, .song-list { list-style: none; padding: 0; }
+        .album-item, .song-item-artist { display: flex; align-items: center; margin-bottom: 12px; padding: 8px; border-radius: 5px; transition: background-color 0.2s; }
+        .album-item:hover, .song-item-artist:hover { background-color: #f5f5f5; }
+        .album-item img, .song-item-artist img { width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 4px; }
+        .album-info p, .song-info-artist p { margin: 0; }
+        .album-info .album-title, .song-info-artist .song-title { font-weight: bold; color: #007bff; text-decoration:none; }
+        .album-info .release-date, .song-info-artist .play-count { font-size: 0.85em; color: #777; }
+        .follow-button { padding: 10px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin-top: 15px; }
+        .follow-button:hover { background-color: #4cae4c; }
+        .message { padding: 10px; margin-bottom: 15px; border-radius: 4px; text-align:center;}
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .back-link-header { position: absolute; top: 20px; left: 20px; color: white; text-decoration: none; font-size:0.9em;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="javascript:history.back()" class="back-link-header"><< Geri</a>
+        <h1><?php echo $page_title; ?></h1>
+    </div>
+
+    <?php if (isset($_GET['follow_success'])): ?>
+        <p class="message success">Sanatçı başarıyla takip edildi (dinleyici sayısı arttı)!</p>
+    <?php endif; ?>
+    <?php if (isset($_GET['follow_error'])): ?>
+        <p class="message error">Takip etme işleminde bir hata oluştu.</p>
+    <?php endif; ?>
+
+    <?php if ($artist_data): ?>
+        <div class="container">
+            <div class="left-panel-artist">
+                <img src="<?php echo htmlspecialchars($artist_data['image'] ? $artist_data['image'] : 'assets/images/default_artist.png'); ?>" alt="<?php echo htmlspecialchars($artist_data['name']); ?>">
+                <h2><?php echo htmlspecialchars($artist_data['name']); ?></h2>
+                <p><strong>Tür:</strong> <?php echo htmlspecialchars($artist_data['genre'] ?? 'Belirtilmemiş'); ?></p>
+                <p><strong>Ülke:</strong> <?php echo htmlspecialchars($artist_data['country_name'] ?? 'Belirtilmemiş'); ?></p>
+                <p><strong>Dinleyiciler:</strong> <?php echo number_format($artist_data['listeners'] ?? 0); ?></p>
+                <p><strong>Katılım Tarihi:</strong> <?php echo htmlspecialchars(date("d.m.Y", strtotime($artist_data['date_joined']))); ?></p>
+                
+                <?php if ($user_id): // Sadece giriş yapmış kullanıcılar takip edebilir ?>
+                <form action="artistpage.php?id=<?php echo $artist_id; ?>" method="POST">
+                    <input type="hidden" name="action" value="follow_artist">
+                    <button type="submit" class="follow-button">Takip Et (+1 Dinleyici)</button>
+                </form>
+                <?php endif; ?>
+
+                <h3>Biyografi</h3>
+                <p class="bio"><?php echo nl2br(htmlspecialchars($artist_data['bio'] ?? 'Biyografi bulunmamaktadır.')); ?></p>
+            </div>
+            <div class="right-panel-artist">
+                <div class="section-artist">
+                    <h3>Son Albümler (En Fazla 5)</h3>
+                    <?php if (!empty($artist_albums)): ?>
+                        <ul class="album-list">
+                            <?php foreach ($artist_albums as $album): ?>
+                                <li class="album-item">
+                                    <img src="<?php echo htmlspecialchars($album['image'] ? $album['image'] : 'assets/images/default_album.png'); ?>" alt="<?php echo htmlspecialchars($album['name_title']); ?>">
+                                    <div class="album-info">
+                                        <p><a class="album-title" href="albumpage.php?id=<?php echo $album['album_id']; ?>"><?php echo htmlspecialchars($album['name_title']); ?></a></p>
+                                        <p class="release-date">Çıkış: <?php echo htmlspecialchars(date("Y", strtotime($album['release_date']))); ?></p>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>Bu sanatçının henüz albümü bulunmamaktadır.</p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="section-artist">
+                    <h3>En Popüler Şarkılar (Top 5)</h3>
+                    <?php if (!empty($top_songs)): ?>
+                        <ul class="song-list">
+                            <?php foreach ($top_songs as $song): ?>
+                                <li class="song-item-artist">
+                                    <img src="<?php echo htmlspecialchars($song['image'] ? $song['image'] : 'assets/images/default_song.png'); ?>" alt="<?php echo htmlspecialchars($song['title']); ?>">
+                                    <div class="song-info-artist">
+                                        <p><a class="song-title" href="currentmusic.php?song_id=<?php echo $song['song_id']; ?>"><?php echo htmlspecialchars($song['title']); ?></a></p>
+                                        <p class="play-count">Dinlenme Sayısı: <?php echo number_format($song['play_count']); ?></p>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>Bu sanatçının popüler şarkı verisi bulunmamaktadır.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php elseif (isset($_GET['id'])): ?>
+        <p style="text-align:center; margin-top:50px; font-size:1.2em; color:red;">Hata: Sanatçı bulunamadı.</p>
+    <?php else: ?>
+        <p style="text-align:center; margin-top:50px; font-size:1.2em; color:red;">Hata: Görüntülenecek sanatçı belirtilmedi.</p>
+    <?php endif; ?>
+
+</body>
+</html>

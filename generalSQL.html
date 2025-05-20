@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $page_title; ?> - Müzik Çalar</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 1000px; margin: auto; background-color: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 30px; }
+        .report-section { margin-bottom: 20px; }
+        .report-section ul { list-style: decimal; padding-left: 20px; }
+        .report-section li { margin-bottom: 5px; }
+        
+        .custom-sql-section textarea { width: 100%; min-height: 100px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: monospace; font-size: 1em;}
+        .custom-sql-section button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .custom-sql-section button:hover { background-color: #0056b3; }
+        .sql-results table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .sql-results th, .sql-results td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .sql-results th { background-color: #f0f0f0; }
+        .error-message { color: red; font-weight: bold; }
+        .warning-message { color: orange; font-style: italic; margin-bottom:10px; padding:10px; border: 1px solid orange; background-color: #fff3e0;}
+        .back-link-page { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="homepage.php" class="back-link-page"><< Anasayfaya Dön</a>
+        <h1><?php echo $page_title; ?></h1>
+
+        <!-- Hazır Raporlar -->
+        <div class="report-section">
+            <h2>Kullanıcıların En Çok Tercih Ettiği Türler (Top 5)</h2>
+            <?php if (!empty($top_genres_users)): ?>
+                <ul>
+                    <?php foreach ($top_genres_users as $genre_stat): ?>
+                        <li><?php echo htmlspecialchars($genre_stat['top_genre']); ?> (<?php echo $genre_stat['user_count']; ?> kullanıcı)</li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>Veri bulunamadı.</p>
+            <?php endif; ?>
+        </div>
+
+        <div class="report-section">
+            <h2>En Çok Dinlenen Şarkılar (Genel Top 5)</h2>
+            <?php if (!empty($top_songs_overall)): ?>
+                <ul>
+                    <?php foreach ($top_songs_overall as $song_stat): ?>
+                        <li><?php echo htmlspecialchars($song_stat['title']); ?> - <?php echo htmlspecialchars($song_stat['artist_name']); ?> (<?php echo $song_stat['play_count']; ?> dinlenme)</li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>Veri bulunamadı.</p>
+            <?php endif; ?>
+        </div>
+
+        <div class="report-section">
+            <h2>En Çok Sanatçıya Sahip Ülkeler (Top 5)</h2>
+            <?php if (!empty($artist_counts_by_country)): ?>
+                <ul>
+                    <?php foreach ($artist_counts_by_country as $country_stat): ?>
+                        <li><?php echo htmlspecialchars($country_stat['country_name']); ?> (<?php echo $country_stat['artist_count']; ?> sanatçı)</li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>Veri bulunamadı.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Özel SQL Sorgu Alanı -->
+        <div class="custom-sql-section">
+            <h2>Özel SQL Sorgusu Çalıştır</h2>
+            <p class="warning-message">
+                <strong>ÇOK ÖNEMLİ UYARI:</strong> Bu alana girdiğiniz SQL sorguları doğrudan veritabanında çalıştırılacaktır. 
+                <code>DROP TABLE</code>, <code>DELETE FROM</code>, <code>UPDATE</code> gibi komutlar 
+                verilerinize kalıcı zarar verebilir veya tüm verilerinizi silebilir. 
+                Bu özelliği sadece ne yaptığınızı tam olarak biliyorsanız ve tüm riskleri anlıyorsanız kullanın.
+                Yanlışlıkla veri kaybı yaşamamak için çok dikkatli olun!
+                <code>SELECT</code> sorgularının sonuçları ilk 5 satırla sınırlandırılmıştır.
+            </p>
+            <form action="generalSQL.php" method="POST">
+                <textarea name="custom_query" placeholder="ÖRNEK: SELECT * FROM USERS LIMIT 5;"><?php echo htmlspecialchars($custom_sql_query); ?></textarea>
+                <button type="submit">Sorguyu Çalıştır</button>
+            </form>
+
+            <?php if (isset($custom_sql_error) && !empty($custom_sql_error)): ?>
+                <p class="error-message" style="margin-top:15px;"><?php echo htmlspecialchars($custom_sql_error); ?></p>
+            <?php endif; ?>
+
+            <?php 
+            // Sonuçları gösterme (SELECT, INSERT, UPDATE, DELETE için farklı gösterim)
+            if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['custom_query']) && empty($custom_sql_error)) {
+                echo '<h3 style="margin-top:20px;">Sorgu Sonuçları:</h3>';
+
+                if (isset($custom_sql_affected_rows) && $custom_sql_affected_rows !== null) {
+                    // INSERT, UPDATE, DELETE gibi işlemler için
+                    echo "<p style='color:green;'>Sorgu başarıyla çalıştırıldı. Etkilenen satır sayısı: <strong>" . $custom_sql_affected_rows . "</strong></p>";
+                } elseif (isset($custom_sql_results)) {
+                    // SELECT sorguları için
+                    if (empty($custom_sql_results) && empty($custom_sql_headers) && !empty($custom_sql_query)) {
+                        echo "<p>SELECT sorgusu geçerli ancak hiç sonuç döndürmedi.</p>";
+                    } elseif (!empty($custom_sql_headers) && is_array($custom_sql_results)) {
+                        echo '<div class="sql-results">';
+                        echo '<table>';
+                        echo '<thead><tr>';
+                        foreach ($custom_sql_headers as $header) {
+                            echo '<th>' . htmlspecialchars($header) . '</th>';
+                        }
+                        echo '</tr></thead>';
+                        echo '<tbody>';
+                        if(empty($custom_sql_results) && !empty($custom_sql_headers)){ // Başlık var ama satır yoksa (örn: SELECT * FROM empty_table)
+                            echo '<tr><td colspan="' . count($custom_sql_headers) . '" style="text-align:center;">Hiçbir kayıt bulunamadı.</td></tr>';
+                        } else {
+                            foreach ($custom_sql_results as $row) {
+                                echo '<tr>';
+                                foreach ($row as $value) {
+                                    echo '<td>' . htmlspecialchars((is_null($value) ? "NULL" : $value)) . '</td>';
+                                }
+                                echo '</tr>';
+                            }
+                        }
+                        echo '</tbody></table>';
+                        echo '</div>';
+                        if (is_array($custom_sql_results) && count($custom_sql_results) >= 5 && stripos($custom_sql_query, "SELECT") === 0) {
+                            // Bu kontrol, $custom_sql_results'ın gerçekten bir mysqli_result nesnesinden gelip gelmediğini
+                            // ve 5 satır limitine ulaşıp ulaşmadığını daha iyi yansıtmalı.
+                            // $conn->query() ile SELECT dışında bir şey çalıştırınca $result true/false döner, num_rows olmaz.
+                            // $custom_sql_php içindeki mantıkta $custom_sql_results SELECT için zaten en fazla 5 satır içerecek şekilde ayarlandı.
+                            echo '<p><small>Not: SELECT sorgu sonuçları (eğer varsa) ilk 5 satırla gösterilmiştir.</small></p>';
+                        }
+                    } elseif (!empty($custom_sql_query)) { // Eğer custom_sql_results null/boş ama sorgu yapıldıysa
+                        echo "<p>Sorgu çalıştırıldı ancak görüntülenecek bir sonuç seti (SELECT) veya işlem sonucu (INSERT/UPDATE/DELETE) alınamadı.</p>";
+                    }
+                }
+            }
+            ?>
+        </div>
+    </div>
+</body>
+</html>

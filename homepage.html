@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo isset($page_title) ? $page_title : "Anasayfa - Müzik Çalar"; ?></title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; }
+        .container { display: flex; }
+        .left-panel { width: 30%; padding: 15px; border-right: 1px solid #ccc; min-height: 100vh; }
+        .right-panel { width: 70%; padding: 15px; }
+        .section { margin-bottom: 20px; padding: 10px; border: 1px solid #eee; }
+        .section h2 { margin-top: 0; }
+        .item { display: flex; align-items: center; margin-bottom: 10px; }
+        .item img { width: 50px; height: 50px; object-fit: cover; margin-right: 10px; }
+        .item-info p { margin: 0; }
+        .search-bar { margin-bottom: 15px; }
+        .playlist-header { display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div style="padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;">
+        <h1><?php echo isset($page_title) ? $page_title : "Anasayfa"; ?></h1>
+        <div>
+            <a href="generalSQL.php" style="margin-right: 15px;">Genel Raporlar</a>
+            <a href="logout.php">Çıkış Yap</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- SOL PANEL -->
+        <div class="left-panel">
+            <div class="search-bar">
+                <form action="search_general.php" method="GET">
+                    <input type="text" name="query" placeholder="Playlist veya Şarkı Ara..." style="width: 80%;">
+                    <button type="submit">Ara</button>
+                </form>
+            </div>
+
+            <?php
+                if (isset($_GET['success_playlist'])) {
+                    echo "<p style='color:green;'>" . htmlspecialchars(urldecode($_GET['success_playlist'])) . "</p>";
+                }
+                if (isset($_GET['error_playlist'])) {
+                    echo "<p style='color:red;'>Hata: " . htmlspecialchars(urldecode($_GET['error_playlist'])) . "</p>";
+                }
+            ?>
+
+            <div class="section">
+                <div class="playlist-header">
+                    <h2>Çalma Listelerim</h2>
+                    <!-- Yeni çalma listesi ekleme formu/butonu -->
+                    <form action="create_playlist.php" method="POST" style="display: block; margin-top: 10px; padding:10px; border:1px solid #ddd; background-color:#f9f9f9;">
+                        <div style="margin-bottom: 8px;">
+                            <label for="playlist_title_new" style="display:block; margin-bottom:3px; font-size:0.9em;">Liste Adı:</label>
+                            <input type="text" id="playlist_title_new" name="playlist_title" placeholder="Yeni Liste Adı" required style="width: calc(100% - 10px); padding: 5px;">
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <label for="playlist_description_new" style="display:block; margin-bottom:3px; font-size:0.9em;">Açıklama (İsteğe Bağlı):</label>
+                            <textarea id="playlist_description_new" name="playlist_description" placeholder="Liste hakkında kısa bir açıklama..." style="width: calc(100% - 10px); padding: 5px; min-height: 40px;"></textarea>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <label for="playlist_image_new" style="display:block; margin-bottom:3px; font-size:0.9em;">Resim URL'si (İsteğe Bağlı):</label>
+                            <input type="text" id="playlist_image_new" name="playlist_image" placeholder="https://example.com/image.jpg" style="width: calc(100% - 10px); padding: 5px;">
+                        </div>
+                        <button type="submit" title="Yeni Çalma Listesi Oluştur" style="padding: 6px 12px;">Oluştur</button>
+                    </form>
+                </div>
+                <?php if (!empty($playlists)): ?>
+                    <?php foreach ($playlists as $playlist): ?>
+                        <div class="item">
+                            <img src="<?php echo htmlspecialchars($playlist['image'] ? $playlist['image'] : 'assets/images/default_playlist.png'); ?>" alt="<?php echo htmlspecialchars($playlist['title']); ?>">
+                            <div class="item-info">
+                                <p>
+                                    <a href="playlistpage.php?id=<?php echo $playlist['playlist_id']; ?>">
+                                        <?php echo htmlspecialchars($playlist['title']); ?>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Henüz çalma listeniz bulunmuyor.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- SAĞ PANEL -->
+        <div class="right-panel">
+            <div class="section">
+                <h2>Son Dinlediklerim</h2>
+                <div class="search-bar">
+                    <form action="search_song_from_history.php" method="GET">
+                        <input type="text" name="song_title" placeholder="Geçmişten Şarkı Ara..." style="width: 80%;">
+                        <button type="submit">Ara</button>
+                    </form>
+                </div>
+                <?php if (!empty($play_history)): ?>
+                    <?php foreach ($play_history as $history_song): ?>
+                        <div class="item">
+                            <img src="<?php echo htmlspecialchars($history_song['song_image'] ? $history_song['song_image'] : 'assets/images/default_song.png'); ?>" alt="<?php echo htmlspecialchars($history_song['title']); ?>">
+                            <div class="item-info">
+                                <p>
+                                    <a href="currentmusic.php?song_id=<?php echo $history_song['song_id']; ?>">
+                                        <?php echo htmlspecialchars($history_song['title']); ?>
+                                    </a>
+                                </p>
+                                <p><small>Sanatçı: <?php echo htmlspecialchars($history_song['artist_name']); ?></small></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Dinleme geçmişiniz boş.</p>
+                <?php endif; ?>
+            </div>
+
+            <div class="section">
+                <h2>Bölgendeki Popüler Sanatçılar</h2>
+                 <div class="search-bar">
+                    <form action="search_artist.php" method="GET">
+                        <input type="text" name="artist_name" placeholder="Yeni Sanatçı Ara..." style="width: 80%;">
+                        <button type="submit">Ara</button>
+                    </form>
+                </div>
+                <?php if (!empty($popular_artists_in_country)): ?>
+                    <?php foreach ($popular_artists_in_country as $artist): ?>
+                        <div class="item">
+                            <img src="<?php echo htmlspecialchars($artist['image'] ? $artist['image'] : 'assets/images/default_artist.png'); ?>" alt="<?php echo htmlspecialchars($artist['name']); ?>">
+                            <div class="item-info">
+                                <p>
+                                    <a href="artistpage.php?id=<?php echo $artist['artist_id']; ?>">
+                                        <?php echo htmlspecialchars($artist['name']); ?>
+                                    </a>
+                                </p>
+                                <p><small>Dinleyici: <?php echo number_format($artist['listeners']); ?></small></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Bölgenizde popüler sanatçı bulunamadı</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

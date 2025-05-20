@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $page_title; ?> - Müzik Çalar</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #f8f8f8; }
+        .album-header { 
+            padding: 40px 20px; 
+            background-color: #555;
+            color: white; 
+            text-align: center; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        .album-header img { 
+            width: 180px; 
+            height: 180px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .album-header-info { text-align: left; }
+        .album-header-info h1 { margin: 0 0 10px 0; font-size: 2.5em; }
+        .album-header-info p { margin: 5px 0; font-size: 1.1em; opacity: 0.9; }
+        .album-header-info a { color: #ffc107; text-decoration: none; }
+        .album-header-info a:hover { text-decoration: underline; }
+
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .song-item { display: flex; align-items: center; padding: 12px 8px; border-bottom: 1px solid #eee; }
+        .song-item:last-child { border-bottom: none; }
+        .song-item .track-number { font-size: 1em; color: #888; width: 30px; text-align: right; margin-right: 15px; }
+        .song-item img.song-art-thumb { width: 40px; height: 40px; object-fit: cover; margin-right: 15px; border-radius: 3px; }
+        .song-info { flex-grow: 1; }
+        .song-info p { margin: 2px 0; }
+        .song-info .song-title-link { font-weight: bold; color: #007bff; text-decoration: none; font-size: 1.1em;}
+        .song-info .song-title-link:hover { text-decoration: underline; }
+        .song-duration { font-size: 0.9em; color: #555; margin-left: auto; padding-left: 15px;}
+        .back-link-page { display: inline-block; margin: 20px 0 0 20px; color: #007bff; text-decoration: none;}
+        .back-link-page:hover { text-decoration: underline; }
+        .no-songs { padding: 20px; text-align: center; color: #777; }
+    </style>
+</head>
+<body>
+    <a href="javascript:history.back()" class="back-link-page"><< Geri Dön</a>
+    <a href="homepage.php" class="back-link-page" style="margin-top:5px;"><->Anasayfaya Dön</a>
+    <?php if ($album_data): ?>
+        <div class="album-header">
+            <img src="<?php echo htmlspecialchars($album_data['album_image'] ? $album_data['album_image'] : 'assets/images/default_album.png'); ?>" alt="Albüm Kapağı">
+            <div class="album-header-info">
+                <h1><?php echo htmlspecialchars($album_data['album_title']); ?></h1>
+                <p>
+                    Sanatçı: 
+                    <a href="artistpage.php?id=<?php echo $album_data['artist_id']; ?>">
+                        <?php echo htmlspecialchars($album_data['artist_name']); ?>
+                    </a>
+                </p>
+                <p>Tür: <?php echo htmlspecialchars($album_data['album_genre'] ?? 'Belirtilmemiş'); ?></p>
+                <p>Çıkış Tarihi: <?php echo htmlspecialchars(date("d.m.Y", strtotime($album_data['album_release_date']))); ?></p>
+                <p>Şarkı Sayısı: <?php echo htmlspecialchars($album_data['music_number'] ?? count($album_songs)); ?></p>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2>Şarkı Listesi</h2>
+            <?php if (!empty($album_songs)): ?>
+                <?php $track_num = 1; ?>
+                <?php foreach ($album_songs as $song): ?>
+                    <div class="song-item">
+                        <span class="track-number"><?php echo $track_num++; ?>.</span>
+                         <img src="<?php echo htmlspecialchars($song['song_image'] ? $song['song_image'] : 'assets/images/default_song.png'); ?>" alt="Şarkı Kapağı" class="song-art-thumb">
+                        <div class="song-info">
+                            <p>
+                                <a class="song-title-link" href="currentmusic.php?song_id=<?php echo $song['song_id']; ?>">
+                                    <?php echo htmlspecialchars($song['song_title']); ?>
+                                </a>
+                            </p>
+                             <p><small>Tür: <?php echo htmlspecialchars($song['song_genre']); ?></small></p>
+                        </div>
+                        <span class="song-duration"><?php echo htmlspecialchars(gmdate("i:s", strtotime($song['duration']) - strtotime('TODAY'))); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="no-songs">Bu albümde henüz şarkı bulunmuyor.</p>
+            <?php endif; ?>
+        </div>
+
+    <?php elseif (isset($_GET['id'])): ?>
+        <p class="no-songs" style="margin-top:50px; font-size:1.2em; color:red;">Hata: Albüm bulunamadı.</p>
+    <?php else: ?>
+        <p class="no-songs" style="margin-top:50px; font-size:1.2em; color:red;">Hata: Görüntülenecek albüm belirtilmedi.</p>
+    <?php endif; ?>
+</body>
+</html>
