@@ -6,8 +6,8 @@ This project is a simple web-based Music Player application developed for the CS
 
 ## Student Information
 
-*   **Name:** [Yusuf Özdil]
-*   **Student ID:** [20210702049]
+*   **Name:** Yusuf Özdil
+*   **Student ID:** 20210702049
 *   **Course:** CSE348 Database Management Systems
 *   **Term:** Spring 2025
 
