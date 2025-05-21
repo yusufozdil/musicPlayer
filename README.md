@@ -74,6 +74,7 @@ MusicPlayer_CSE348/
 │   └── images/
 │       ├── default_album.png
 │       └── default_song.png
+│       └── logo.png
 │
 ├── data/
 │   ├── input_countries.txt
