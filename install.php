@@ -37,7 +37,7 @@ $table_queries = [
     "COUNTRY" => "CREATE TABLE IF NOT EXISTS COUNTRY (
         country_id INT AUTO_INCREMENT PRIMARY KEY,
         country_name VARCHAR(100) NOT NULL UNIQUE,
-        country_code VARCHAR(5) NOT NULL UNIQUE COMMENT 'Örn: TR, US, GB' 
+        country_code VARCHAR(5) NOT NULL UNIQUE
     )",
 
     "USERS" => "CREATE TABLE IF NOT EXISTS USERS (
@@ -47,11 +47,11 @@ $table_queries = [
         name VARCHAR(100),
         username VARCHAR(50) NOT NULL UNIQUE,
         email VARCHAR(100) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL COMMENT 'Şifreler hashlenerek saklanmalı',
+        password VARCHAR(255) NOT NULL,
         date_joined DATE,
         last_login TIMESTAMP NULL DEFAULT NULL,
         follower_num INT DEFAULT 0,
-        subscription_type VARCHAR(20) COMMENT 'Örn: free, premium',
+        subscription_type VARCHAR(20),
         top_genre VARCHAR(50),
         num_songs_liked INT DEFAULT 0,
         most_played_artist VARCHAR(100),

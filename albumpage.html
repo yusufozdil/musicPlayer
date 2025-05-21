@@ -8,7 +8,7 @@
         body { font-family: sans-serif; margin: 0; background-color: #f8f8f8; }
         .album-header { 
             padding: 40px 20px; 
-            background-color: #555;
+            background-color: #4CAF50;
             color: white; 
             text-align: center; 
             display: flex;
@@ -45,8 +45,7 @@
     </style>
 </head>
 <body>
-    <a href="javascript:history.back()" class="back-link-page"><< Geri Dön</a>
-    <a href="homepage.php" class="back-link-page" style="margin-top:5px;"><->Anasayfaya Dön</a>
+
     <?php if ($album_data): ?>
         <div class="album-header">
             <img src="<?php echo htmlspecialchars($album_data['album_image'] ? $album_data['album_image'] : 'assets/images/default_album.png'); ?>" alt="Albüm Kapağı">
@@ -61,8 +60,11 @@
                 <p>Tür: <?php echo htmlspecialchars($album_data['album_genre'] ?? 'Belirtilmemiş'); ?></p>
                 <p>Çıkış Tarihi: <?php echo htmlspecialchars(date("d.m.Y", strtotime($album_data['album_release_date']))); ?></p>
                 <p>Şarkı Sayısı: <?php echo htmlspecialchars($album_data['music_number'] ?? count($album_songs)); ?></p>
+                <a href="javascript:history.back()" style="margin-right: 20px; color: #2f6a31; font-size: 1.0em; text-decoration:none;">Geri Dön</a>
+                <a href="homepage.php" style="margin-right: 20px; color: #2f6a31; font-size: 1.0em; text-decoration:none;">Anasayfaya Dön</a>
             </div>
         </div>
+        
 
         <div class="container">
             <h2>Şarkı Listesi</h2>

@@ -3,22 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yusuf Ozdil</title> 
+    <title>Yusuf Ozdil - Müzik Çalar Kurulumu</title> 
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef1f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        .setup-container {
+            background-color: #ffffff;
+            padding: 35px 45px;
+            border-radius: 12px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        .setup-container h1 {
+            color: #285a29;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .setup-container p {
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        
+        .setup-container p.lead {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: #444;
+        }
+
+        .setup-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.15em;
+            font-weight: 600;
+            transition: #4CAF50 0.3s, transform 0.2s;
+            display: inline-block; 
+            text-decoration: none;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        .setup-button:hover {
+            background-color: #347936; 
+            transform: translateY(-2px);
+        }
+        
+        .setup-button:active {
+            transform: translateY(0px);
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Müzik Çalar Uygulaması Kurulumu</h1>
-    <p>
-        Uygulamayı ilk kez çalıştırıyorsanız, lütfen veritabanını ve gerekli tabloları oluşturmak için aşağıdaki butona tıklayın.
-    </p>
-    <p>
-        Bu işlem tamamlandıktan sonra giriş sayfasına yönlendirileceksiniz.
-    </p>
+    <div class="setup-container">
+        
+        <h1>Müzik Çalar Uygulaması Kurulumu</h1>
+        <p class="lead">
+            Uygulamayı ilk kez çalıştırıyorsanız lütfen veritabanını ve gerekli tabloları oluşturmak için aşağıdaki butona tıklayın.
+        </p>
+        <p>
+            Bu işlem tamamlandıktan sonra otomatik olarak giriş sayfasına yönlendirileceksiniz.
+        </p>
 
-    <form action="install.php" method="POST">
-        <button type="submit">Veritabanını Başlat ve Kur</button>
-    </form>
+        <form action="install.php" method="POST" style="margin:0;">
+            <button type="submit" class="setup-button">Veritabanını Başlat ve Kur</button>
+        </form>
+    </div>
 
-    <hr>
 </body>
 </html>

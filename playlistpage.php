@@ -9,23 +9,27 @@ if (!isset($_SESSION['user_id'])) {
 
 $playlist_id = null;
 $playlist_title = "Çalma Listesi Bulunamadı";
+$playlist_image_url = null;
+$playlist_description = null;
 $playlist_songs = [];
 $user_id = $_SESSION['user_id'];
 
 if (isset($_GET['id'])) {
     $playlist_id = intval($_GET['id']);
-    $stmt_pl_info = $conn->prepare("SELECT title, user_id FROM PLAYLISTS WHERE playlist_id = ?");
+    $stmt_pl_info = $conn->prepare("SELECT title, user_id, image, description FROM PLAYLISTS WHERE playlist_id = ?");
     if ($stmt_pl_info) {
         $stmt_pl_info->bind_param("i", $playlist_id);
         $stmt_pl_info->execute();
         $result_pl_info = $stmt_pl_info->get_result();
         if ($pl_row = $result_pl_info->fetch_assoc()) {
-            if ($pl_row['user_id'] != $user_id) {
-            header("Location: homepage.php?error=Bu çalma listesini görüntüleme yetkiniz yok.");
-            exit;
+            if ($pl_row['user_id'] != $user_id) { // Kullanıcı yetki kontrolü
+                header("Location: homepage.php?error=Bu çalma listesini görüntüleme yetkiniz yok.");
+                exit;
             }
             $playlist_title = $pl_row['title'];
-        } else {
+            $playlist_image_url = $pl_row['image']; // YENİ: Resmi al
+            $playlist_description = $pl_row['description']; // YENİ: Açıklamayı al
+        }  else {
             header("Location: homepage.php?error_playlist=Çalma listesi bulunamadı.");
             exit;
         }

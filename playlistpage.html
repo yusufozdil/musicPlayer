@@ -5,91 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($playlist_title); ?> - Müzik Çalar</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        .container { max-width: 900px; margin: auto; }
+        body { font-family: sans-serif; margin: 0; background-color: #f8f8f8; }
+        .playlist-header-custom {
+            padding: 30px 20px; 
+            background-color: #4CAF50;
+            color: white; 
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        .playlist-header-custom img { 
+            width: 150px; 
+            height: 150px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+        }
+        .playlist-header-info { text-align: left; }
+        .playlist-header-info h1 { margin: 0 0 8px 0; font-size: 2.2em; }
+        .playlist-header-info p.description { margin: 5px 0; font-size: 1em; opacity: 0.9; max-width: 600px; }
+        
+        .container { max-width: 900px; margin: auto; padding: 0 20px 20px 20px; }
         .song-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
-        .song-item img { width: 50px; height: 50px; object-fit: cover; margin-right: 15px; }
+        .song-item:last-child { border-bottom: none; }
+        .song-item img { width: 50px; height: 50px; object-fit: cover; margin-right: 15px; border-radius: 3px;}
         .song-info { flex-grow: 1; }
         .song-info p { margin: 2px 0; }
         .country-info { font-size: 0.9em; color: #555; }
-        .search-add-song { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9; }
-        .search-add-song input[type="text"] { padding: 8px; width: 70%; margin-right: 10px; }
-        .search-add-song button { padding: 8px 12px; }
-        .found-song { margin-top:15px; padding:10px; border:1px dashed #aaa; display:flex; align-items:center; }
+        .search-add-song { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 5px;}
+        .search-add-song input[type="text"] { padding: 8px; width: calc(70% - 12px); margin-right: 10px; border:1px solid #ccc; border-radius:3px;}
+        .search-add-song button { padding: 8px 12px; border:none; background-color:#007bff; color:white; border-radius:3px; cursor:pointer;}
+        .search-add-song button:hover { background-color:#0056b3;}
+        .found-song { margin-top:15px; padding:10px; border:1px dashed #aaa; display:flex; align-items:center; background-color:#fff;}
         .found-song img { width:40px; height:40px; margin-right:10px; }
         .message { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
         .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .back-link-page { display: inline-block; margin: 15px 0 15px 20px; color: #007bff; text-decoration: none; font-weight:bold;}
+        .back-link-page:hover { text-decoration: underline; }
+        .no-songs { padding: 20px; text-align: center; color: #777; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <p><a href="homepage.php"><< Anasayfaya Dön</a></p>
-        <h1>Çalma Listesi: <?php echo htmlspecialchars($playlist_title); ?></h1>
-
-        <?php if (isset($_GET['success_add'])): ?>
-            <p class="message success"><?php echo htmlspecialchars($_GET['success_add']); ?></p>
-        <?php endif; ?>
-        <?php if (isset($_GET['error_add'])): ?>
-            <p class="message error"><?php echo htmlspecialchars($_GET['error_add']); ?></p>
-        <?php endif; ?>
-
-        <!-- Şarkı Ekleme Bölümü -->
-        <div class="search-add-song">
-            <h3>Bu Çalma Listesine Şarkı Ekle</h3>
-            <form action="playlistpage.php" method="GET">
-                <input type="hidden" name="id" value="<?php echo $playlist_id; ?>">
-                <input type="text" name="search_song_title" placeholder="Eklenecek şarkı adını yazın..." 
-                       value="<?php echo isset($_GET['search_song_title']) ? htmlspecialchars($_GET['search_song_title']) : ''; ?>">
-                <button type="submit">Şarkı Ara</button>
-            </form>
-
-            <?php if (isset($_GET['search_song_title']) && $searched_song_to_add): ?>
-                <div class="found-song">
-                    <img src="<?php echo htmlspecialchars($searched_song_to_add['song_image'] ? $searched_song_to_add['song_image'] : 'assets/images/default_song.png'); ?>" alt="Şarkı Kapağı">
-                    <div>
-                        <strong>Bulunan Şarkı:</strong> <?php echo htmlspecialchars($searched_song_to_add['title']); ?> 
-                        (Sanatçı: <?php echo htmlspecialchars($searched_song_to_add['artist_name']); ?>)
-                        <form action="playlistpage.php?id=<?php echo $playlist_id; ?>" method="POST" style="display:inline; margin-left:10px;">
-                            <input type="hidden" name="action" value="add_song">
-                            <input type="hidden" name="song_id_to_add" value="<?php echo $searched_song_to_add['song_id']; ?>">
-                            <button type="submit">Listeye Ekle</button>
-                        </form>
-                    </div>
-                </div>
-            <?php elseif (isset($_GET['search_song_title']) && !empty(trim($_GET['search_song_title'])) && !$searched_song_to_add): ?>
-                <p style="margin-top:10px; color:orange;">Aradığınız isimde şarkı bulunamadı.</p>
+    <?php if ($playlist_id): // Sadece playlist_id varsa başlığı göster ?>
+    <div class="playlist-header-custom">
+        <img src="<?php echo htmlspecialchars($playlist_image_url ? $playlist_image_url : 'assets/images/default_playlist.png'); ?>" alt="Çalma Listesi Kapağı">
+        <div class="playlist-header-info">
+            <h1><?php echo htmlspecialchars($playlist_title); ?></h1>
+            <?php if ($playlist_description): ?>
+                <p class="description"><?php echo nl2br(htmlspecialchars($playlist_description)); ?></p>
             <?php endif; ?>
+            <a href="homepage.php" style="margin-right: 20px; color: #2f6a31; font-size: 1.0em; text-decoration:none;">Anasayfaya Dön</a>
         </div>
-
-        <!-- Şarkı Listesi -->
-        <h2>Şarkılar</h2>
-        <?php if (!empty($playlist_songs)): ?>
-            <?php foreach ($playlist_songs as $song): ?>
-                <div class="song-item">
-                    <img src="<?php echo htmlspecialchars($song['song_image'] ? $song['song_image'] : 'assets/images/default_song.png'); ?>" alt="Şarkı Kapağı">
-                    <div class="song-info">
-                        <p>
-                            <strong>
-                                <a href="currentmusic.php?song_id=<?php echo $song['song_id']; ?>">
-                                    <?php echo htmlspecialchars($song['song_title']); ?>
-                                </a>
-                            </strong>
-                        </p>
-                        <p>
-                            Sanatçı: 
-                            <a href="artistpage.php?id=<?php echo $song['artist_id']; ?>">
-                                <?php echo htmlspecialchars($song['artist_name']); ?>
-                            </a>
-                            <?php if ($song['country_name']): ?>
-                                <span class="country-info">(<?php echo htmlspecialchars($song['country_name']); ?> - <?php echo htmlspecialchars($song['country_code']); ?>)</span>
-                            <?php endif; ?>
-                        </p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+    
+    <div class="container">
+        <?php if (!$playlist_id): ?>
+            <p class="message error">Çalma listesi bilgileri yüklenemedi.</p>
         <?php else: ?>
-            <p>Bu çalma listesinde henüz şarkı bulunmuyor.</p>
+            <?php if (isset($_GET['success_add'])): ?>
+                <p class="message success"><?php echo htmlspecialchars($_GET['success_add']); ?></p>
+            <?php endif; ?>
+            <?php if (isset($_GET['error_add'])): ?>
+                <p class="message error"><?php echo htmlspecialchars($_GET['error_add']); ?></p>
+            <?php endif; ?>
+
+            <div class="search-add-song">
+                <h3>Bu Çalma Listesine Şarkı Ekle</h3>
+                <form action="playlistpage.php" method="GET">
+                    <input type="hidden" name="id" value="<?php echo $playlist_id; ?>">
+                    <input type="text" name="search_song_title" placeholder="Eklenecek şarkı adını yazın..." 
+                           value="<?php echo isset($_GET['search_song_title']) ? htmlspecialchars($_GET['search_song_title']) : ''; ?>">
+                    <button type="submit">Şarkı Ara</button>
+                </form>
+
+                <?php if (isset($_GET['search_song_title']) && $searched_song_to_add): ?>
+                    <div class="found-song">
+                        <img src="<?php echo htmlspecialchars($searched_song_to_add['song_image'] ? $searched_song_to_add['song_image'] : 'assets/images/default_song.png'); ?>" alt="Şarkı Kapağı">
+                        <div>
+                            <strong>Bulunan Şarkı:</strong> <?php echo htmlspecialchars($searched_song_to_add['title']); ?> 
+                            (Sanatçı: <?php echo htmlspecialchars($searched_song_to_add['artist_name']); ?>)
+                            <form action="playlistpage.php?id=<?php echo $playlist_id; ?>" method="POST" style="display:inline; margin-left:10px;">
+                                <input type="hidden" name="action" value="add_song">
+                                <input type="hidden" name="song_id_to_add" value="<?php echo $searched_song_to_add['song_id']; ?>">
+                                <button type="submit">Listeye Ekle</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php elseif (isset($_GET['search_song_title']) && !empty(trim($_GET['search_song_title'])) && !$searched_song_to_add): ?>
+                    <p style="margin-top:10px; color:orange;">Aradığınız isimde şarkı bulunamadı.</p>
+                <?php endif; ?>
+            </div>
+            <h2>Şarkılar</h2>
+            <?php if (!empty($playlist_songs)): ?>
+                <?php foreach ($playlist_songs as $song): ?>
+                    <div class="song-item">
+                        <img src="<?php echo htmlspecialchars($song['song_image'] ? $song['song_image'] : 'assets/images/default_song.png'); ?>" alt="Şarkı Kapağı">
+                        <div class="song-info">
+                            <p>
+                                <strong>
+                                    <a href="currentmusic.php?song_id=<?php echo $song['song_id']; ?>" style="text-decoration:none; color:#007bff;">
+                                        <?php echo htmlspecialchars($song['song_title']); ?>
+                                    </a>
+                                </strong>
+                            </p>
+                            <p>
+                                Sanatçı: 
+                                <a href="artistpage.php?id=<?php echo $song['artist_id']; ?>" style="text-decoration:none; color:#555;">
+                                    <?php echo htmlspecialchars($song['artist_name']); ?>
+                                </a>
+                                <?php if ($song['country_name']): ?>
+                                    <span class="country-info">(<?php echo htmlspecialchars($song['country_name']); ?> - <?php echo htmlspecialchars($song['country_code']); ?>)</span>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="no-songs">Bu çalma listesinde henüz şarkı bulunmuyor.</p>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </body>

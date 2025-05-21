@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $stmt = $conn->prepare("SELECT user_id, username, password, name FROM USERS WHERE username = ?");
+    $stmt = $conn->prepare("SELECT * FROM USERS WHERE username = ?");
     if ($stmt === false) {
         error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
         header("Location: login.html?error=Sistem hatası, lütfen daha sonra tekrar deneyin. (Prep)");
@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['user_name'] = $user['name'];
+            $_SESSION['user_image'] = $user['image'];
 
             $update_stmt = $conn->prepare("UPDATE USERS SET last_login = CURRENT_TIMESTAMP WHERE user_id = ?");
             if($update_stmt) {

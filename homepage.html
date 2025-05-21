@@ -20,11 +20,17 @@
 </head>
 <body>
 
-    <div style="padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;">
-        <h1><?php echo isset($page_title) ? $page_title : "Anasayfa"; ?></h1>
-        <div>
-            <a href="generalSQL.php" style="margin-right: 15px;">Genel Raporlar</a>
-            <a href="logout.php">Çıkış Yap</a>
+    <div style="padding: 10px 20px; background-color: #4CAF50; color: white; border-bottom: 1px solid #55c458; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center;">
+            <?php if ($user_image_url): ?>
+                <img src="<?php echo htmlspecialchars($user_image_url); ?>" alt="Profil Resmi" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #55c458;">
+            <?php endif; ?>
+            <h1><?php echo isset($page_title) ? $page_title : "Anasayfa"; ?></h1>
+        </div>
+        <div style="display: flex; align-items: center;">  
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" title="Sürpriz!" style="margin-right: 20px; color: #55c458; font-size: 1.5em; text-decoration:none;">sürpriz</a>
+            <a href="generalSQL.php" style="margin-right: 15px; color: #ddd; text-decoration: none;">Genel Raporlar</a>
+            <a href="logout.php" style="color: #ddd; text-decoration: none;">Çıkış Yap</a>
         </div>
     </div>
 

@@ -11,6 +11,7 @@ require_once('includes/db_connect.php');
 
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'];
+$user_image_url = isset($_SESSION['user_image']) ? $_SESSION['user_image'] : null;
 
 // Sayfa başlığı için
 $page_title = "Merhaba, " . htmlspecialchars($user_name) . "!";
