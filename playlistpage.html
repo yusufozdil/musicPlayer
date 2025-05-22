@@ -35,14 +35,14 @@
         .country-info { font-size: 0.9em; color: #555; }
         .search-add-song { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 5px;}
         .search-add-song input[type="text"] { padding: 8px; width: calc(70% - 12px); margin-right: 10px; border:1px solid #ccc; border-radius:3px;}
-        .search-add-song button { padding: 8px 12px; border:none; background-color:#007bff; color:white; border-radius:3px; cursor:pointer;}
-        .search-add-song button:hover { background-color:#0056b3;}
+        .search-add-song button { padding: 8px 12px; border:none; background-color:#4CAF50; color:white; border-radius:3px; cursor:pointer;}
+        .search-add-song button:hover { background-color:#4CAF50;}
         .found-song { margin-top:15px; padding:10px; border:1px dashed #aaa; display:flex; align-items:center; background-color:#fff;}
         .found-song img { width:40px; height:40px; margin-right:10px; }
         .message { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
         .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .back-link-page { display: inline-block; margin: 15px 0 15px 20px; color: #007bff; text-decoration: none; font-weight:bold;}
+        .back-link-page { display: inline-block; margin: 15px 0 15px 20px; color: #4CAF50; text-decoration: none; font-weight:bold;}
         .back-link-page:hover { text-decoration: underline; }
         .no-songs { padding: 20px; text-align: center; color: #777; }
     </style>
@@ -106,7 +106,7 @@
                         <div class="song-info">
                             <p>
                                 <strong>
-                                    <a href="currentmusic.php?song_id=<?php echo $song['song_id']; ?>" style="text-decoration:none; color:#007bff;">
+                                    <a href="currentmusic.php?song_id=<?php echo $song['song_id']; ?>" style="text-decoration:none; color:#4CAF50;">
                                         <?php echo htmlspecialchars($song['song_title']); ?>
                                     </a>
                                 </strong>

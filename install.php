@@ -3,11 +3,14 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+set_time_limit(300);
+ob_start();
 // --- Veritabanı Bağlantı Bilgileri ---
 $servername = "localhost";
 $username = "root";
 $password = "mysql"; 
 $dbname = "yusuf_ozdil";
+$generated_sql_file_path = 'sql/generated_data.sql';
 
 // --- 1. MySQL Sunucusuna Bağlan (Veritabanı belirtmeden) ---
 $conn = new mysqli($servername, $username, $password);
@@ -135,19 +138,70 @@ foreach ($table_queries as $table_name => $sql_create_table) {
         $all_tables_created_successfully = false;
     }
 }
+// --- 5. generate_data.php'yi Çalıştır ---
+echo "<h3>`generate_data.php` çalıştırılıyor...</h3>";
+ob_start();
+include 'generate_data.php';
+$generate_data_output = ob_get_clean();
+echo "<h4>`generate_data.php` Çalışma Çıktısı:</h4><pre>" . htmlspecialchars($generate_data_output) . "</pre>";
 
-// --- 5. İşlemler Tamamlandı, Yönlendirme ---
-if ($all_tables_created_successfully) {
-    echo "Tüm veritabanı ve tablo kurulum işlemleri başarıyla tamamlandı!<br>";
-    echo "Giriş sayfasına yönlendiriliyorsunuz...";
-    
-    $conn->close();
 
-    header("Location: login.html");
-    exit;
-} else {
-    echo "Bazı tablolar oluşturulurken hatalar meydana geldi. Lütfen yukarıdaki mesajları kontrol edin.<br>";
-    $conn->close();
+// --- 6. Oluşturulan SQL Dosyasını Oku ve Çalıştır ---
+echo "<h3>Oluşturulan `$generated_sql_file_path` dosyasındaki veriler import ediliyor...</h3>";
+$sql_content = file_get_contents($generated_sql_file_path);
+if ($sql_content === false) {
+    ob_end_flush();
+    die("<p style='color:red;'>HATA: `$generated_sql_file_path` dosyası okunamadı.</p>");
 }
+
+
+$sql_commands = explode(';', $sql_content);
+$total_commands = 0;
+$successful_commands = 0;
+$failed_commands = 0;
+$errors_import = [];
+
+foreach ($sql_commands as $command) {
+    $command = trim($command);
+    if (!empty($command)) { // Boş komutları atla
+        $total_commands++;
+        if ($conn->query($command) === TRUE) {
+            $successful_commands++;
+        } else {
+            $failed_commands++;
+            $errors_import[] = "Hata ('" . substr($command, 0, 50) . "...'): " . $conn->error;
+            // Çok fazla hata olursa loglamayı durdurabilirsin
+            if (count($errors_import) > 10) {
+                 $errors_import[] = "... ve daha fazla hata.";
+                 break;
+            }
+        }
+    }
+}
+
+if ($failed_commands > 0) {
+    echo "<p style='color:red;'>SQL import sırasında $failed_commands / $total_commands komutta hata oluştu.</p>";
+    echo "<h4>Import Hataları (ilk 10):</h4><pre>";
+    foreach($errors_import as $err) {
+        echo htmlspecialchars($err) . "\n";
+    }
+    echo "</pre>";
+} else {
+    echo "<p>$successful_commands / $total_commands SQL komutu başarıyla çalıştırıldı. Tablolar dolduruldu.</p>";
+}
+
+
+// --- 7. İşlemler Tamamlandı, Yönlendirme ---
+echo "<h2>Kurulum ve Veri Yükleme İşlemleri Tamamlandı!</h2>";
+echo "<p>Giriş sayfasına yönlendiriliyorsunuz...</p>";
+
+$conn->close();
+ob_end_flush();
+
+sleep(3); 
+
+header("Location: login.html?setup=success");
+exit;
+?>
 
 ?>

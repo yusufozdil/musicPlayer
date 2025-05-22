@@ -57,7 +57,7 @@
                 <div class="playlist-header">
                     <h2>Çalma Listelerim</h2>
                     <!-- Yeni çalma listesi ekleme formu/butonu -->
-                    <form action="create_playlist.php" method="POST" style="display: block; margin-top: 10px; padding:10px; border:1px solid #ddd; background-color:#f9f9f9;">
+                    <form action="create_playlist.php" method="POST" style="display: block; margin-top: 10px; padding:10px; border:1px solid #ddd; background-color:#39823c;">
                         <div style="margin-bottom: 8px;">
                             <label for="playlist_title_new" style="display:block; margin-bottom:3px; font-size:0.9em;">Liste Adı:</label>
                             <input type="text" id="playlist_title_new" name="playlist_title" placeholder="Yeni Liste Adı" required style="width: calc(100% - 10px); padding: 5px;">
@@ -76,10 +76,10 @@
                 <?php if (!empty($playlists)): ?>
                     <?php foreach ($playlists as $playlist): ?>
                         <div class="item">
-                            <img src="<?php echo htmlspecialchars($playlist['image'] ? $playlist['image'] : 'assets/images/default_playlist.png'); ?>" alt="<?php echo htmlspecialchars($playlist['title']); ?>">
+                            <img src="<?php echo htmlspecialchars($playlist['image']); ?>" alt="<?php echo htmlspecialchars($playlist['title']); ?>">
                             <div class="item-info">
                                 <p>
-                                    <a href="playlistpage.php?id=<?php echo $playlist['playlist_id']; ?>">
+                                    <a href="playlistpage.php?id=<?php echo $playlist['playlist_id']; ?>" style="text-decoration:none; color:#4CAF50;">
                                         <?php echo htmlspecialchars($playlist['title']); ?>
                                     </a>
                                 </p>
@@ -108,7 +108,7 @@
                             <img src="<?php echo htmlspecialchars($history_song['song_image'] ? $history_song['song_image'] : 'assets/images/default_song.png'); ?>" alt="<?php echo htmlspecialchars($history_song['title']); ?>">
                             <div class="item-info">
                                 <p>
-                                    <a href="currentmusic.php?song_id=<?php echo $history_song['song_id']; ?>">
+                                    <a href="currentmusic.php?song_id=<?php echo $history_song['song_id']; ?>" style="text-decoration:none; color:#4CAF50;">
                                         <?php echo htmlspecialchars($history_song['title']); ?>
                                     </a>
                                 </p>
@@ -135,7 +135,7 @@
                             <img src="<?php echo htmlspecialchars($artist['image'] ? $artist['image'] : 'assets/images/default_artist.png'); ?>" alt="<?php echo htmlspecialchars($artist['name']); ?>">
                             <div class="item-info">
                                 <p>
-                                    <a href="artistpage.php?id=<?php echo $artist['artist_id']; ?>">
+                                    <a href="artistpage.php?id=<?php echo $artist['artist_id']; ?>" style="text-decoration:none; color:#4CAF50;">
                                         <?php echo htmlspecialchars($artist['name']); ?>
                                     </a>
                                 </p>

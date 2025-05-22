@@ -29,7 +29,7 @@
         .song-details p { margin: 5px 0; color: #666; font-size: 0.9em; }
         .controls { margin-top: 20px; } 
         .controls button {
-            background-color: #5cb85c;
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -46,7 +46,7 @@
 <body>
     <div class="music-player-card">
         <?php if ($song_data): ?>
-            <img src="<?php echo htmlspecialchars($song_data['song_image'] ? $song_data['song_image'] : 'assets/images/default_song.png'); ?>" alt="Albüm Kapağı" class="album-art">
+            <img src="<?php echo htmlspecialchars($song_data['song_image']); ?>" alt="Albüm Kapağı" class="album-art">
             
             <h1 class="song-title"><?php echo htmlspecialchars($song_data['song_title']); ?></h1>
             <p class="artist-name">
@@ -75,9 +75,14 @@
                     <button type="submit" name="play_button" title="Oynat (ve Dinlendi Olarak İşaretle)">⏯</button>
                 </form>
             <?php else: ?>
-                <button title="Oynat/Duraklat" disabled>⏯</button> <!-- Kullanıcı giriş yapmamışsa veya şarkı yoksa pasif -->
+                <button title="Oynat/Duraklat" disabled>⏯</button>
             <?php endif; ?>
                 <button title="Sonraki">⏭</button>
+            </div>
+
+            <div>
+                <a href="javascript:history.back()" style="margin: 20px; color: #2f6a31; font-size: 1.0em; text-decoration:none;">Geri Dön</a>
+                <a href="homepage.php" style="margin: 20px; color: #2f6a31; font-size: 1.0em; text-decoration:none;">Anasayfaya Dön</a>
             </div>
 
         <?php elseif (isset($_GET['song_id'])): ?>
@@ -85,9 +90,6 @@
         <?php else: ?>
             <p class="error-message">Hata: Görüntülenecek şarkı belirtilmedi.</p>
         <?php endif; ?>
-
-        <a href="javascript:history.back()" class="back-link"><< Geri Dön</a>
-        <a href="homepage.php" class="back-link" style="margin-top:5px;"><->Anasayfaya Dön</a>
-    </div>
+       </div>
 </body>
 </html>
